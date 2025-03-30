@@ -3,6 +3,6 @@ services:
   crop-yield-prediction:
     build: .
     ports:
-      - "5000:5000"
+      - "9696:9696"
     volumes:
       - ./app/model:/app/model

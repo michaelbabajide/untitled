@@ -14,5 +14,5 @@ test_input = {
 }
 
 # Send prediction request
-response = requests.post('http://0.0.0.0:5000/predict', json=test_input, timeout=10)
+response = requests.post('http://0.0.0.0:9696/predict', json=test_input, timeout=10)
 print(response.json())

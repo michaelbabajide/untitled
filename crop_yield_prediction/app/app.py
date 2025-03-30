@@ -1,13 +1,17 @@
 import pandas as pd
 import pickle
 from flask import Flask, request, jsonify
+import logging
 
 # Initialize Flask app
 app = Flask(__name__)
 
+logging.basicConfig(level=logging.INFO)
+app.logger.info("Application starting up")
+
 # Load model and preprocessing pipeline
-MODEL_PATH = '/app/model/best_crop_yield_model.pkl'
-PIPELINE_PATH = '/app/model/crop_yield_preprocessing_pipeline.pkl'
+MODEL_PATH = '/workspaces/untitled/crop_yield_prediction/app/model/best_crop_yield_model.pkl'
+PIPELINE_PATH = '/workspaces/untitled/crop_yield_prediction/app/model/crop_yield_preprocessing_pipeline.pkl'
 
 # Load model and pipeline using pickle instead of joblib
 with open(MODEL_PATH, 'rb') as model_file:
@@ -45,4 +49,4 @@ def health_check():
     return jsonify({'status': 'healthy'}), 200
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=9696, debug=True)
