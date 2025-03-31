@@ -47,7 +47,7 @@ This project aims to predict crop yield based on environmental and agricultural 
 
 ### **📊 2. Improve Model Performance**
 - **Hyperparameter tuning** for tree-based models (Random Forest, Gradient Boosting) to optimize performance.
-- Feature Engineering: Consider polynomial terms: `Temperature^2` and Rainfall^2
+- Feature Engineering: Consider polynomial terms: Temperature<sup>2</sup> and Rainfall<sup>2</sup>
 - Experiment with **Polynomial Regression (degree=2)** to capture quadratic relationships.
 - Try **XGBoost**, which often performs well in structured data problems.
 - Consider using **Neural Networks** for deeper feature interactions.
