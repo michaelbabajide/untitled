@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crop Yield Predictor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+        .container {
+            background-color: white;
+            width: 100%;
+            max-width: 500px;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 1.5rem;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #666;
+        }
+        select, input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 0.75rem;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+        #result {
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: #e7f3fe;
+            border-radius: 4px;
+            text-align: center;
+        }
+        .error {
+            color: red;
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Crop Yield Predictor</h1>
+        <form id="cropYieldForm">
+            <div class="form-group">
+                <label for="region">Region</label>
+                <select id="region" required>
+                    <option value="">Select Region</option>
+                    <option value="north">North</option>
+                    <option value="east">East</option>
+                    <option value="south">South</option>
+                    <option value="west">West</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="soil_type">Soil Type</label>
+                <select id="soil_type" required>
+                    <option value="">Select Soil Type</option>
+                    <option value="clay">Clay</option>
+                    <option value="sandy">Sandy</option>
+                    <option value="loam">Loam</option>
+                    <option value="silt">Silt</option>
+                    <option value="peaty">Peaty</option>
+                    <option value="chalky">Chalky</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="crop">Crop Type</label>
+                <select id="crop" required>
+                    <option value="">Select Crop</option>
+                    <option value="wheat">Wheat</option>
+                    <option value="rice">Rice</option>
+                    <option value="maize">Maize</option>
+                    <option value="barley">Barley</option>
+                    <option value="soybean">Soybean</option>
+                    <option value="cotton">Cotton</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="rainfall_mm">Rainfall (mm)</label>
+                <input type="number" id="rainfall_mm" required min="0" step="0.1" placeholder="Enter rainfall in mm">
+            </div>
+
+            <div class="form-group">
+                <label for="temperature_celsius">Temperature (°C)</label>
+                <input type="number" id="temperature_celsius" required step="0.1" placeholder="Enter average temperature">
+            </div>
+
+            <div class="form-group">
+                <label for="fertilizer_used">Fertilizer Used</label>
+                <select id="fertilizer_used" required>
+                    <option value="">Select</option>
+                    <option value="true">Yes</option>
+                    <option value="false">No</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="irrigation_used">Irrigation Used</label>
+                <select id="irrigation_used" required>
+                    <option value="">Select</option>
+                    <option value="true">Yes</option>
+                    <option value="false">No</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="weather_condition">Weather Condition</label>
+                <select id="weather_condition" required>
+                    <option value="">Select Weather Condition</option>
+                    <option value="sunny">Sunny</option>
+                    <option value="rainy">Rainy</option>
+                    <option value="cloudy">Cloudy</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="days_to_harvest">Days to Harvest</label>
+                <input type="number" id="days_to_harvest" required min="1" placeholder="Enter days to harvest">
+            </div>
+
+            <button type="submit" class="btn">Predict Crop Yield</button>
+        </form>
+
+        <div id="result" style="display: none;"></div>
+    </div>
+
+    <script>
+        document.getElementById('cropYieldForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Collect form data
+            const formData = {
+                region: document.getElementById('region').value,
+                soil_type: document.getElementById('soil_type').value,
+                crop: document.getElementById('crop').value,
+                rainfall_mm: parseFloat(document.getElementById('rainfall_mm').value),
+                temperature_celsius: parseFloat(document.getElementById('temperature_celsius').value),
+                fertilizer_used: document.getElementById('fertilizer_used').value === 'true',
+                irrigation_used: document.getElementById('irrigation_used').value === 'true',
+                weather_condition: document.getElementById('weather_condition').value,
+                days_to_harvest: parseInt(document.getElementById('days_to_harvest').value)
+            };
+
+            // Send prediction request
+            fetch('http://0.0.0.0:9696/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                const resultDiv = document.getElementById('result');
+                if (data.predicted_yield) {
+                    resultDiv.innerHTML = `
+                        <strong>Predicted Crop Yield:</strong> 
+                        ${data.predicted_yield.toFixed(2)} ${data.units}
+                    `;
+                    resultDiv.style.display = 'block';
+                } else {
+                    resultDiv.innerHTML = 'Error predicting crop yield';
+                    resultDiv.style.display = 'block';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                const resultDiv = document.getElementById('result');
+                resultDiv.innerHTML = 'Network error. Please try again.';
+                resultDiv.style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,6 +1,6 @@
 import pandas as pd
 import pickle
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 import logging
 
 # Initialize Flask app
@@ -20,8 +20,18 @@ with open(MODEL_PATH, 'rb') as model_file:
 with open(PIPELINE_PATH, 'rb') as pipeline_file:
     pipeline = pickle.load(pipeline_file)
 
+@app.route('/')
+def index():
+    return render_template('index.html')
+
 @app.route('/predict', methods=['POST'])
 def predict_crop_yield():
+    app.logger.error("Received request: %s", request.json)
+        
+    # Get input data from request
+    input_data = request.json
+    app.logger.error("Input Data: %s", input_data)
+
     try:
         # Get input data from request
         input_data = request.json
